@@ -1,4 +1,4 @@
-from config import LoggerSetup, log_execution
+from config import LoggerSetup, log_function
 import functools
 
 # Configurar logger
@@ -6,7 +6,7 @@ logger_setup = LoggerSetup()
 logger = logger_setup.setup_logger(__name__)
 
 
-@log_execution("procesar_datos_jugador")
+@log_function("procesar_datos_jugador")
 @functools.lru_cache(maxsize=100)
 def main():
     """
