@@ -39,8 +39,6 @@ if sys.platform.startswith('win'):
         sys.stdout.reconfigure(encoding='utf-8')
         sys.stderr.reconfigure(encoding='utf-8')
 
-from .logger_config import LoggerSetup, log_function
+from .logger_config import LoggerSetup, log_function, find_project_root
 
-from .logger_config import LoggerSetup, log_function
-
-__all__ = ["LoggerSetup", "log_function"]  # Controla qué se importa cuando uso import *
+__all__ = ["LoggerSetup", "log_function", "find_project_root"]

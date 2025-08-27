@@ -1,22 +1,24 @@
 # 2. Comprensión de los Datos
 
-## 2.1. Recolección inicial de datos
+## 2.1 Recolección inicial de datos
 
-### 2.1.1. Fuentes de datos
+### 2.1.1 Descripción del dataset
 
-`inter_miami_mls24_events.csv`: DataFrame que contiene los eventos de los 31 partidos jugados por el Inter Miami en la MLS 2024.
-
-### 2.1.2. Descripción del dataset
+**Dataset A - `all_events_mls24.csv`**
 
 - Tamaño: 64971 filas | 182 columnas
 - Formato: pd.DataFrame
 
-### 2.1.3. Calidad inicial
+**Dataset B - `players_stats_mls24.csv`**
+
+**Dataset B - `teams_stats_mls24.csv`**
+
+### 2.1.2 Calidad inicial
 
 - Columnas con valores faltantes: 166
 - 1417604 valores nulos (esperable debido a contener muchísimas columnas específicas de un tipo de evento)
 
-## 2.2. Descripción de los datos
+## 2.2 Descripción de los datos
 
 ### 2.2.1. Variables disponibles
 

@@ -14,7 +14,7 @@ logger = logger_setup.setup_logger(__name__)
 # ===  ANÁLISIS EXPLORATORIO ===
 
 @log_function()
-def exploratory_analysis(df: pd.DataFrame) -> None:
+def exploratory_analysis(df: pd.DataFrame, is_event: bool) -> None:
     """
     Realiza un análisis exploratorio básico del DataFrame.
     
@@ -30,7 +30,7 @@ def exploratory_analysis(df: pd.DataFrame) -> None:
     print("\n=== Dimensiones ===")
     print(f"Filas: {df.shape[0]}  |  Columnas: {df.shape[1]}")
 
-    duplicados = df[df['id'].duplicated()].shape[0]
+    duplicados = df.duplicated().sum()
     print(f"\n=== Registros duplicados: {duplicados} ===")
 
     nulos = df.isnull().sum().sort_values(ascending=False)
@@ -57,14 +57,17 @@ def exploratory_analysis(df: pd.DataFrame) -> None:
     print("\n=== Tipos de variables: ===")
     print(df.dtypes.value_counts())
 
-    print(f"\n=== Eventos únicos: {len(pd.unique(df['eventTypeName']))} ===")
-    print(pd.unique(df['eventTypeName']))
+    if is_event:
+        print(f"\n=== Eventos deleted: {len(pd.unique(df[df['eventTypeName'] == 'Deleted event']))} ===")
 
+        print(f"\n=== Eventos únicos: {len(pd.unique(df['eventTypeName']))} ===")
+        print(pd.unique(df['eventTypeName']))
 
-# === VISUALIZACIONES INICIALES ===
+        
+# === VISUALIZACIONES INICIALES (Eventing) ===
 
     ## === VISUALIZACIÓN 1 ===
-def _analyze_event_distribution(df: pd.DataFrame, save_plot: bool = True) -> dict:
+def _analyze_event_distribution(df: pd.DataFrame) -> dict:
     """
     Analiza la distribución de tipos de eventos.
     
@@ -107,7 +110,7 @@ def _analyze_event_distribution(df: pd.DataFrame, save_plot: bool = True) -> dic
     bars = ax1.bar(range(len(top_15_events)), top_15_events.values, 
                    color=sns.color_palette("husl", len(top_15_events)))
     
-    ax1.set_title('Top 15 Tipos de Eventos Más Frecuentes - Inter Miami CF', 
+    ax1.set_title('Top 15 Tipos de Eventos Más Frecuentes', 
                   fontsize=16, fontweight='bold', pad=20)
     ax1.set_ylabel('Número de Eventos', fontsize=12)
     ax1.set_xticks(range(len(top_15_events)))
@@ -169,12 +172,12 @@ def _analyze_event_distribution(df: pd.DataFrame, save_plot: bool = True) -> dic
 
 
     ## === VISUALIZACIÓN 2 ===
-def _temporal_distribution_analysis(df: pd.DataFrame, save_plot: bool = True) -> dict:
+def _temporal_distribution_analysis(df: pd.DataFrame) -> dict:
     """
     Analiza la distribución temporal de eventos (timeMin).
     
     Args:
-        df: DataFrame con eventos del Inter Miami.
+        df: DataFrame con eventos.
         save_plot: Si guardar la figura generada.
         
     Returns:
@@ -198,7 +201,7 @@ def _temporal_distribution_analysis(df: pd.DataFrame, save_plot: bool = True) ->
                           boxprops=dict(facecolor='lightblue', alpha=0.7),
                           medianprops=dict(color='red', linewidth=2))
     
-    ax1.set_title('Distribución de Eventos por Minuto - Inter Miami CF', 
+    ax1.set_title('Distribución de Eventos por Minuto', 
                   fontsize=14, fontweight='bold')
     ax1.set_ylabel('Tiempo (minutos)', fontsize=12)
     ax1.grid(axis='y', alpha=0.3)
@@ -242,12 +245,12 @@ def _temporal_distribution_analysis(df: pd.DataFrame, save_plot: bool = True) ->
 
 
     ## === VISUALIZACIÓN 3 ===
-def _events_per_match_analysis(df: pd.DataFrame, save_plots: bool = True) -> dict:
+def _events_per_match_analysis(df: pd.DataFrame) -> dict:
     """
     Analiza la distribución de eventos por partido (histograma + boxplot).
     
     Args:
-        df: DataFrame con eventos del Inter Miami.
+        df: DataFrame con eventos.
         save_plots: Si guardar las figuras generadas.
         
     Returns:
@@ -272,7 +275,7 @@ def _events_per_match_analysis(df: pd.DataFrame, save_plots: bool = True) -> dic
     # FIGURA 2: Histograma de eventos por partido
     plt.figure(figsize=(10, 6))
     plt.hist(eventos_por_partido, bins=30, color='lightcoral', alpha=0.7, edgecolor='black')
-    plt.title('Distribución de Eventos por Partido - Inter Miami CF', 
+    plt.title('Distribución de Eventos por Partido', 
              fontsize=14, fontweight='bold')
     plt.xlabel('Eventos por Partido', fontsize=12)
     plt.ylabel('Frecuencia', fontsize=12)
@@ -299,7 +302,7 @@ def _events_per_match_analysis(df: pd.DataFrame, save_plots: bool = True) -> dic
                           boxprops=dict(facecolor='lightgreen', alpha=0.7),
                           medianprops=dict(color='red', linewidth=2))
     
-    plt.title('Eventos por Partido - Inter Miami CF', fontsize=14, fontweight='bold')
+    plt.title('Eventos por Partido', fontsize=14, fontweight='bold')
     plt.ylabel('Número de Eventos', fontsize=12)
     plt.grid(axis='y', alpha=0.3)
     
@@ -327,12 +330,12 @@ def _events_per_match_analysis(df: pd.DataFrame, save_plots: bool = True) -> dic
 
 
     ## === VISUALIZACIÓN 4 ===
-def _spatial_distribution_analysis(df: pd.DataFrame, save_plot: bool = True) -> dict:
+def _spatial_distribution_analysis(df: pd.DataFrame) -> dict:
     """
     Analiza la distribución espacial de eventos con detección de outliers.
     
     Args:
-        df: DataFrame con eventos del Inter Miami.
+        df: DataFrame con eventos.
         save_plot: Si guardar la figura generada.
         
     Returns:
@@ -389,7 +392,7 @@ def _spatial_distribution_analysis(df: pd.DataFrame, save_plot: bool = True) -> 
     ax.axvline(x=100, color='gray', linestyle='--', alpha=0.5)
     
     # Configuración del gráfico
-    ax.set_title('Distribución Espacial de Eventos - Inter Miami CF\n(Outliers fuera del rango 0-100)', 
+    ax.set_title('Distribución Espacial de Eventos\n(Outliers fuera del rango 0-100)', 
                 fontsize=14, fontweight='bold')
     ax.set_xlabel('Coordenada X', fontsize=12)
     ax.set_ylabel('Coordenada Y', fontsize=12)
@@ -399,14 +402,13 @@ def _spatial_distribution_analysis(df: pd.DataFrame, save_plot: bool = True) -> 
     plt.tight_layout()
     
     # Guardar figura
-    if save_plot:
-        PROJECT_ROOT = find_project_root()
-        output_dir = PROJECT_ROOT / "docs" / "reports" / "figures"
-        output_dir.mkdir(parents=True, exist_ok=True)
-        
-        plt.savefig(output_dir / "distribucion_espacial.png", 
-                   dpi=300, bbox_inches='tight', facecolor='white')
-        logger.info(f"Figura 5 guardada en: {output_dir / 'distribucion_espacial.png'}")
+    PROJECT_ROOT = find_project_root()
+    output_dir = PROJECT_ROOT / "docs" / "reports" / "figures"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    plt.savefig(output_dir / "distribucion_espacial.png", 
+                dpi=300, bbox_inches='tight', facecolor='white')
+    logger.info(f"Figura 5 guardada en: {output_dir / 'distribucion_espacial.png'}")
     
     plt.show()
     
@@ -425,14 +427,14 @@ def _spatial_distribution_analysis(df: pd.DataFrame, save_plot: bool = True) -> 
     return results
 
 
-    ## === FUNCIÓN COORDENADORA GENERAL ===
+    ## === FUNCIÓN COORDENADORA GENERAL (Eventos) ===
 @log_function()
-def comprehensive_data_exploration(df: pd.DataFrame, save_plots: bool = True) -> dict:
+def events_data_exploration(df: pd.DataFrame) -> dict:
     """
     Ejecuta exploración completa de datos llamando a todas las funciones específicas.
     
     Args:
-        df: DataFrame con eventos del Inter Miami.
+        df: DataFrame con eventos.
         save_plots: Si guardar las figuras generadas.
         
     Returns:
@@ -489,6 +491,244 @@ def comprehensive_data_exploration(df: pd.DataFrame, save_plots: bool = True) ->
         raise e(f"Error durante la exploración: {str(e)}")
 
     return all_results
+
+
+# === VISUALIZACIONES INICIALES (Players stats) ===
+
+    ## === VISUALIZACIÓN 1 ===
+@log_function("plot_position_histogram")
+def _plot_position_histogram(df: pd.DataFrame) -> None:
+    """
+    Genera un histograma de la distribución de posiciones de los jugadores.
+    
+    Args:
+        df: DataFrame con estadísticas de jugadores.
+        
+    Returns:
+        None
+    """
+    
+    if 'position' not in df.columns:
+        raise Exception("Columna 'position' no encontrada en el dataset")
+    
+    plt.figure(figsize=(10, 6))
+    sns.histplot(df['position'].dropna(), bins=5, kde=False, color='skyblue', alpha=0.7)
+    plt.title('Distribución de Posiciones', fontsize=14, fontweight='bold')
+    plt.xlabel('Posición', fontsize=12)
+    plt.ylabel('Número de Jugadores', fontsize=12)
+    plt.grid(axis='y', alpha=0.3)
+    plt.tight_layout()
+    
+    # Guardar figura
+    PROJECT_ROOT = find_project_root()
+    output_dir = PROJECT_ROOT / "docs" / "reports" / "figures" / "stats"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    plt.savefig(output_dir / "histograma_posiciones.png", 
+                dpi=300, bbox_inches='tight', facecolor='white')
+    logger.info(f"Histograma de posiciones guardado en: {output_dir / 'histograma_posiciones.png'}")
+    
+    plt.show()
+
+    ## === VISUALIZACIÓN 2 ===
+@log_function("plot_boxplot_by_position")
+def _plot_boxplot_by_position(df: pd.DataFrame, columns: List[str]) -> None:
+    """
+    Genera boxplots de métricas estadísticas agrupadas por posición de jugador.
+    
+    Args:
+        df: DataFrame con estadísticas de jugadores.
+        columns: Lista de columnas numéricas para analizar.
+        
+    Returns:
+        None
+    """
+    
+    required_cols = ['position'] + columns
+    missing_cols = [col for col in required_cols if col not in df.columns]
+    if missing_cols:
+        raise Exception(f"Columnas faltantes: {missing_cols}")
+    
+    # Configurar directorio de salida
+    PROJECT_ROOT = find_project_root()
+    output_dir = PROJECT_ROOT / "docs" / "reports" / "figures" / "stats"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    for i, col in enumerate(columns):
+        plt.figure(figsize=(12, 6))
+        sns.boxplot(data=df, x='position', y=col, palette='husl')
+        plt.title(f'Distribución de {col} por Posición', 
+                 fontsize=14, fontweight='bold')
+        plt.xlabel('Posición', fontsize=12)
+        plt.ylabel(col.replace('_', ' ').title(), fontsize=12)
+        plt.xticks(rotation=45)
+        plt.grid(axis='y', alpha=0.3)
+        plt.tight_layout()
+        
+        # Guardar figura
+        filename = f"boxplot_{col}_por_posicion.png"
+        plt.savefig(output_dir / filename, 
+                    dpi=300, bbox_inches='tight', facecolor='white')
+        logger.info(f"Boxplot {col} guardado en: {output_dir / filename}")
+        
+        plt.show()
+
+## === VISUALIZACIÓN 3 ===
+@log_function("plot_boxplot_players_used")
+def _plot_boxplot_players_used(df: pd.DataFrame) -> None:
+    """
+    Genera un boxplot del número de jugadores utilizados por equipo.
+    
+    Args:
+        df: DataFrame con estadísticas de jugadores.
+        
+    Returns:
+        None
+    """
+    
+    required_cols = ['appearances', 'team_name', 'player_name']
+    missing_cols = [col for col in required_cols if col not in df.columns]
+    if missing_cols:
+        raise Exception(f"Columnas faltantes: {missing_cols}")
+    
+    # Filtrar jugadores con apariciones > 0 y contar por equipo
+    df_filtered = df[df['appearances'] > 0].groupby('team_name').count().copy()
+    
+    if df_filtered.empty:
+        raise Exception("No hay jugadores con apariciones > 0 en el dataset")
+    
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(x=df_filtered['player_name'].dropna(), color='lightcoral')
+    plt.title('Distribución de Jugadores Utilizados por Equipo - MLS 2024', 
+             fontsize=14, fontweight='bold')
+    plt.xlabel('Número de Jugadores Utilizados', fontsize=12)
+    plt.grid(axis='x', alpha=0.3)
+    plt.tight_layout()
+    
+    # Agregar estadísticas
+    stats = df_filtered['player_name'].describe()
+    plt.text(0.02, 0.98, f"Media: {stats['mean']:.1f}\nMediana: {stats['50%']:.1f}", 
+            transform=plt.gca().transAxes, fontsize=10, verticalalignment='top',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="yellow", alpha=0.7))
+    
+    # Guardar figura
+    PROJECT_ROOT = find_project_root()
+    output_dir = PROJECT_ROOT / "docs" / "reports" / "figures" / "stats"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    plt.savefig(output_dir / "boxplot_jugadores_utilizados.png", 
+                dpi=300, bbox_inches='tight', facecolor='white')
+    logger.info(f"Boxplot jugadores utilizados guardado en: {output_dir / 'boxplot_jugadores_utilizados.png'}")
+    
+    plt.show()
+
+## === VISUALIZACIÓN 4 ===
+@log_function("plot_corr_heatmap")
+def _plot_corr_heatmap(df: pd.DataFrame) -> None:
+    """
+    Genera un mapa de calor de correlaciones entre métricas estadísticas clave.
+    
+    Args:
+        df: DataFrame con estadísticas de jugadores.
+        
+    Returns:
+        None
+    """
+    
+    # Preparar DataFrame con renombrado de columnas
+    df_clean = df.rename(columns={
+        'total_successful_passes_(_excl_crosses_&_corners_)_': 'passes_completed'
+    }).copy()
+    
+    # Columnas para el análisis de correlación
+    cols = ['time_played', 'goals', 'goal_assists', 'tackles_won', 'passes_completed']
+    
+    # Verificar que existen las columnas necesarias
+    missing_cols = [col for col in cols if col not in df_clean.columns]
+    if missing_cols:
+        raise Exception(f"Columnas faltantes para correlación: {missing_cols}")
+    
+    # Filtrar solo jugadores con datos válidos
+    df_numeric = df_clean[cols].dropna()
+    
+    if df_numeric.empty:
+        raise Exception("No hay datos válidos para el análisis de correlación")
+    
+    plt.figure(figsize=(12, 10))
+    corr = df_numeric.corr()
+    
+    # Crear mapa de calor con configuración mejorada
+    sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".3f",
+                square=True, linewidths=0.5, cbar_kws={"shrink": .8},
+                annot_kws={'size': 11})
+    
+    plt.title('Mapa de Correlaciones - Métricas Estadísticas', 
+             fontsize=14, fontweight='bold', pad=20)
+    
+    # Mejorar etiquetas de los ejes
+    plt.xlabel('Métricas Estadísticas', fontsize=12)
+    plt.ylabel('Métricas Estadísticas', fontsize=12)
+    plt.xticks(rotation=45, ha='right')
+    plt.yticks(rotation=0)
+    plt.tight_layout()
+    
+    # Guardar figura
+    PROJECT_ROOT = find_project_root()
+    output_dir = PROJECT_ROOT / "docs" / "reports" / "figures" / "stats"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    plt.savefig(output_dir / "mapa_correlaciones.png", 
+                dpi=300, bbox_inches='tight', facecolor='white')
+    logger.info(f"Mapa de correlaciones guardado en: {output_dir / 'mapa_correlaciones.png'}")
+    
+    plt.show()
+
+
+    ## === FUNCIÓN COORDENADORA GENERAL (Players stats) ===
+@log_function("player_stats_exploration")
+def player_stats_exploration(df: pd.DataFrame) -> None:
+    """
+    Ejecuta exploración completa de estadísticas de jugadores llamando a todas las funciones específicas.
+    
+    Args:
+        df: DataFrame con estadísticas de jugadores.
+        
+    Returns:
+        None
+    """
+    
+    logger.info("Iniciando exploración completa de estadísticas de jugadores")
+    
+    try:
+        # 1. Ejecutar histograma de posiciones
+        logger.info("Generando histograma de distribución de posiciones...")
+        _plot_position_histogram(df)
+        
+        # 2. Ejecutar boxplots por posición para métricas clave
+        logger.info("Generando boxplots por posición...")
+
+        # Definir columnas numéricas para análisis por posición
+        numeric_columns = ['time_played', 'goals', 'goal_assists']
+        _plot_boxplot_by_position(df, numeric_columns)
+        
+        # 3. Ejecutar análisis de jugadores utilizados
+        logger.info("Generando análisis de jugadores utilizados por equipo...")
+        _plot_boxplot_players_used(df)
+        
+        # 4. Ejecutar mapa de correlaciones
+        logger.info("Generando mapa de correlaciones...")
+        _plot_corr_heatmap(df)
+        
+        # Resumen de archivos generados
+        PROJECT_ROOT = find_project_root()
+        output_dir = PROJECT_ROOT / "docs" / "reports" / "figures"
+        logger.debug(f"\nTodas las figuras de estadísticas de jugadores guardadas en: {output_dir}")
+        
+        logger.info("Exploración completa de estadísticas de jugadores finalizada exitosamente")
+        
+    except Exception as e:
+        logger.error(f"Error durante la exploración de estadísticas de jugadores: {str(e)}")
+        raise Exception(f"Error durante la exploración de estadísticas de jugadores: {str(e)}")
 
 
 if __name__ == "__main__":

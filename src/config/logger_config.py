@@ -61,7 +61,11 @@ class LoggerSetup:
                 # Eliminar los más antiguos, dejando espacio para el nuevo
                 logs_to_delete = existing_logs[:-2]  # Mantener solo 2, el nuevo será el 3ro
                 for old_log in logs_to_delete:
-                    Path(old_log).unlink()
+                    try:
+                        Path(old_log).unlink()
+                    except (PermissionError, OSError) as e:
+                        # Archivo en uso por otro proceso, continuar sin eliminar
+                        pass
             
             # Handler para archivo único por ejecución
             file_handler = logging.FileHandler(log_dir / log_filename, encoding="utf-8")
