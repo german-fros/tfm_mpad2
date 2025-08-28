@@ -5,16 +5,6 @@ from typing import Optional
 import functools
 import locale
 
-# # Configurar encoding del sistema
-# try:
-#     if sys.platform.startswith("win"):
-#         locale.setlocale(locale.LC_ALL, "Spanish_Spain.utf8")
-#     else:
-#         locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
-# except locale.Error:
-#     # Render u otros entornos que no tengan el locale
-#     locale.setlocale(locale.LC_ALL, "")
-
 
 def find_project_root():
     current = Path.cwd()

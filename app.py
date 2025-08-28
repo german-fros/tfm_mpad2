@@ -1,18 +1,3 @@
-"""
-APLICACIÓN PRINCIPAL - ROUTER MLS 2024
-
-Router principal que maneja autenticación y redirección directa al dashboard.
-
-PROPÓSITO:
-- Verificar autenticación de usuarios
-- Redireccionar inmediatamente a src/pages/1_Home.py tras login exitoso
-- Proporcionar formularios de login/registro cuando sea necesario
-
-FLUJO:
-- Usuario accede -> Verificación auth -> Redirección directa a Home
-- Sin pantallas intermedias, experiencia fluida
-"""
-
 import streamlit as st
 import sys
 from pathlib import Path
