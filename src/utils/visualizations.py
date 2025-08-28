@@ -9,7 +9,7 @@ plt.ioff()  # Desactivar modo interactivo
 from matplotlib import colormaps
 import seaborn as sns
 
-from config.logger_config import LoggerSetup, log_function, find_project_root
+from src.config.logger_config import LoggerSetup, log_function, find_project_root
 
 # Configuración de logger inicial
 logger_setup = LoggerSetup()

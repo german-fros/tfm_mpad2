@@ -7,7 +7,7 @@ from datetime import datetime, date
 import os
 import time
 
-from config.logger_config import LoggerSetup, log_function, find_project_root
+from src.config.logger_config import LoggerSetup, log_function, find_project_root
 
 logger_setup = LoggerSetup()
 logger = logger_setup.setup_logger(__name__)

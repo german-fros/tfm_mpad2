@@ -13,7 +13,7 @@ from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageBreak, Table, TableStyle
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 
-from config.logger_config import LoggerSetup, log_function
+from src.config.logger_config import LoggerSetup, log_function
 
 # LOGGER SETUP
 logger_setup = LoggerSetup()

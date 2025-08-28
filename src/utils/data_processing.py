@@ -3,7 +3,7 @@ import pandas as pd
 import json
 from typing import List, Dict, Any, Optional
 from functools import lru_cache
-from config.logger_config import LoggerSetup, log_function, find_project_root
+from src.config.logger_config import LoggerSetup, log_function, find_project_root
 
 # Configurar logger al inicio del módulo
 logger_setup = LoggerSetup()

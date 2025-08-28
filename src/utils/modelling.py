@@ -11,7 +11,7 @@ from sklearn.mixture import GaussianMixture
 from sklearn.cluster import KMeans, AgglomerativeClustering, DBSCAN
 from sklearn.metrics import silhouette_score, calinski_harabasz_score, davies_bouldin_score
 
-from config.logger_config import LoggerSetup, log_function
+from src.config.logger_config import LoggerSetup, log_function
 
 logger_setup = LoggerSetup()
 logger = logger_setup.setup_logger(__name__)
