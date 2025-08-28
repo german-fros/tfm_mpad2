@@ -2,7 +2,7 @@ import pandas as pd
 from typing import List, Dict, Any, Optional
 from functools import lru_cache
 from src.config.logger_config import LoggerSetup, log_function
-from utils.data_processing import find_project_root
+from src.utils.data_processing import find_project_root
 import matplotlib.pyplot as plt
 import seaborn as sns
 
