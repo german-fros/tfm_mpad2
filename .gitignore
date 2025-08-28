@@ -201,6 +201,8 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+
+
 # Marimo
 marimo/_static/
 marimo/_lsp/
@@ -208,4 +210,7 @@ __marimo__/
 
 /temp
 CLAUDE.md
+.setup.py
 /.claude
+
+

@@ -16,7 +16,7 @@ logger_setup = LoggerSetup()
 logger = logger_setup.setup_logger(__name__)
 
 
-@log_function()
+@log_function("create_pizza_comparison")
 def create_pizza_comparison(
     player1_name: str, 
     player1_team: str, 
@@ -194,7 +194,7 @@ def create_pizza_comparison(
     return fig
 
 
-@log_function()
+@log_function("create_heatmap_comparison")
 def create_heatmap_comparison(player1_name: str, player2_name: str, 
                             events_data: pd.DataFrame) -> plt.Figure:
     """
@@ -297,7 +297,7 @@ def create_heatmap_comparison(player1_name: str, player2_name: str,
     return fig
 
 
-@log_function()
+@log_function("create_basic_metrics_comparison_chart")
 def create_basic_metrics_comparison_chart(
     player1_name: str, 
     player1_team: str,
@@ -455,7 +455,8 @@ def create_player_clustering_visualization(
         position: Posición de los jugadores para el clustering.
         player1_name: Nombre del primer jugador a destacar.
         player2_name: Nombre del segundo jugador a destacar.
-        all_players_stats: DataFrame con estadísticas de todos los jugadores.
+        prepared_data: DataFrame con datos preparados para clustering.
+        players_name: Serie con nombres de jugadores y posiciones.
         
     Returns:
         Tupla con figura del scatter plot y diccionario con información de clusters.

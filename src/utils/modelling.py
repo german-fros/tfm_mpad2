@@ -17,7 +17,17 @@ logger_setup = LoggerSetup()
 logger = logger_setup.setup_logger(__name__)
 
 
-def prep_data_modelling(df):
+@log_function("prep_data_modelling")
+def prep_data_modelling(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Prepara los datos para modelado de clustering.
+
+    Args:
+        df: DataFrame con estadísticas de jugadores.
+
+    Returns:
+        Tupla con DataFrame preparado para modelado y DataFrame con nombres de jugadores.
+    """
     df_model = df.copy()
 
     float_cols = df_model.select_dtypes(['float']).columns.to_list()
@@ -26,17 +36,27 @@ def prep_data_modelling(df):
 
     df_players_name = df_model[['player_name', 'position']]
 
+    df_prepared.to_csv('../data/processed/df_modelo.csv', index=False)
+
     return df_prepared, df_players_name
 
 
 @log_function("build_pipeline")
 def build_pipeline(
-    pca_components: int,
+    pca_components: Optional[int],
     n_clusters: int,
     random_state: int = 42,
 ) -> Pipeline:
     """
     Construye un Pipeline con MinMaxScaler + PCA + KMeans.
+
+    Args:
+        pca_components: Número de componentes PCA. Si es None, no aplica PCA.
+        n_clusters: Número de clusters para KMeans.
+        random_state: Semilla para reproducibilidad.
+
+    Returns:
+        Pipeline configurado para clustering.
     """
     steps = [("scaler", MinMaxScaler())]
 
@@ -50,12 +70,21 @@ def build_pipeline(
 @log_function("fit_clusters")
 def fit_clusters(
     X: pd.DataFrame,
-    pca_components: int,
+    pca_components: Optional[int],
     n_clusters: int,
     random_state: int = 42,
 ) -> Tuple[pd.DataFrame, Pipeline]:
     """
     Ajusta el pipeline al dataset y devuelve los clusters.
+
+    Args:
+        X: DataFrame con características para clustering.
+        pca_components: Número de componentes PCA. Si es None, no aplica PCA.
+        n_clusters: Número de clusters.
+        random_state: Semilla para reproducibilidad.
+
+    Returns:
+        Tupla con DataFrame que incluye clusters y pipeline entrenado.
     """
     pipe = build_pipeline(pca_components, n_clusters, random_state)
     labels = pipe.fit_predict(X)
@@ -73,6 +102,15 @@ def define_k(
 ) -> Tuple[Dict[str, object], Dict[str, object]]:
     """
     Devuelve la selección de k óptimo según Silhouette y Elbow.
+
+    Args:
+        X: DataFrame con características.
+        k_range: Rango de valores k a evaluar.
+        pca_components: Número de componentes PCA.
+        random_state: Semilla para reproducibilidad.
+
+    Returns:
+        Tupla con resultados de Silhouette y Elbow.
     """
 
     def _select_k_by_silhouette(
@@ -143,8 +181,8 @@ def plot_k_diagnostics(
     Grafica las curvas de Silhouette y Elbow para comparar la elección de k.
 
     Args:
-        sil_result: dict devuelto por select_k_by_silhouette().
-        elbow_result: dict devuelto por select_k_by_elbow().
+        sil_result: Diccionario con resultados de Silhouette.
+        elbow_result: Diccionario con resultados de Elbow.
         title: Título del gráfico.
     """
     fig, ax1 = plt.subplots(figsize=(8, 5))
@@ -188,6 +226,14 @@ def optimal_pca_components(
 ) -> int:
     """
     Número mínimo de componentes PCA necesarios para explicar >= threshold de la varianza.
+
+    Args:
+        X: DataFrame con características.
+        threshold: Umbral de varianza explicada (por defecto 0.9).
+        random_state: Semilla para reproducibilidad.
+
+    Returns:
+        Número óptimo de componentes PCA.
     """
     X_scaled = MinMaxScaler().fit_transform(X)
     pca = PCA(random_state=random_state).fit(X_scaled)

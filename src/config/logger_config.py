@@ -6,7 +6,13 @@ import functools
 import locale
 
 
-def find_project_root():
+def find_project_root() -> Path:
+    """
+    Encuentra la raíz del proyecto buscando archivos setup.py o requirements.txt.
+
+    Returns:
+        Path: Ruta a la raíz del proyecto.
+    """
     current = Path.cwd()
     for parent in [current] + list(current.parents):
         if (parent / "setup.py").exists() or (parent / "requirements.txt").exists():
@@ -90,7 +96,15 @@ class LoggerSetup:
 
 # Decorador
 def log_function(func_name: Optional[str] = None):
-    """Decorador robusto para logging de funciones."""
+    """
+    Decorador robusto para logging de funciones.
+
+    Args:
+        func_name: Nombre personalizado para la función en los logs.
+
+    Returns:
+        Función decorada con logging automático.
+    """
     def decorator(func):
         name = func_name or func.__name__
         logger = logging.getLogger(func.__module__)

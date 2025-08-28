@@ -13,7 +13,7 @@ logger = logger_setup.setup_logger(__name__)
 
 # ===  ANÁLISIS EXPLORATORIO ===
 
-@log_function()
+@log_function("exploratory_analysis")
 def exploratory_analysis(df: pd.DataFrame, is_event: bool) -> None:
     """
     Realiza un análisis exploratorio básico del DataFrame.
@@ -67,13 +67,13 @@ def exploratory_analysis(df: pd.DataFrame, is_event: bool) -> None:
 # === VISUALIZACIONES INICIALES (Eventing) ===
 
     ## === VISUALIZACIÓN 1 ===
-def _analyze_event_distribution(df: pd.DataFrame) -> dict:
+def _analyze_event_distribution(df: pd.DataFrame, save_plot: bool = True) -> dict:
     """
     Analiza la distribución de tipos de eventos.
     
     Args:
         df: DataFrame con eventos.
-        save_plots: Si guardar los gráficos generados.
+        save_plot: Si guardar los gráficos generados.
         
     Returns:
         Diccionario con estadísticas de la distribución.
@@ -172,7 +172,7 @@ def _analyze_event_distribution(df: pd.DataFrame) -> dict:
 
 
     ## === VISUALIZACIÓN 2 ===
-def _temporal_distribution_analysis(df: pd.DataFrame) -> dict:
+def _temporal_distribution_analysis(df: pd.DataFrame, save_plot: bool = True) -> dict:
     """
     Analiza la distribución temporal de eventos (timeMin).
     
@@ -245,7 +245,7 @@ def _temporal_distribution_analysis(df: pd.DataFrame) -> dict:
 
 
     ## === VISUALIZACIÓN 3 ===
-def _events_per_match_analysis(df: pd.DataFrame) -> dict:
+def _events_per_match_analysis(df: pd.DataFrame, save_plots: bool = True) -> dict:
     """
     Analiza la distribución de eventos por partido (histograma + boxplot).
     
@@ -330,7 +330,7 @@ def _events_per_match_analysis(df: pd.DataFrame) -> dict:
 
 
     ## === VISUALIZACIÓN 4 ===
-def _spatial_distribution_analysis(df: pd.DataFrame) -> dict:
+def _spatial_distribution_analysis(df: pd.DataFrame, save_plot: bool = True) -> dict:
     """
     Analiza la distribución espacial de eventos con detección de outliers.
     
@@ -428,8 +428,8 @@ def _spatial_distribution_analysis(df: pd.DataFrame) -> dict:
 
 
     ## === FUNCIÓN COORDENADORA GENERAL (Eventos) ===
-@log_function()
-def events_data_exploration(df: pd.DataFrame) -> dict:
+@log_function("events_data_exploration")
+def events_data_exploration(df: pd.DataFrame, save_plots: bool = True) -> dict:
     """
     Ejecuta exploración completa de datos llamando a todas las funciones específicas.
     
@@ -449,48 +449,32 @@ def events_data_exploration(df: pd.DataFrame) -> dict:
     if missing_cols:
         raise ValueError(f"Columnas básicas faltantes: {missing_cols}")
     
-    # Inicializar resultados
-    all_results = {
-        'dataset_summary': {
-            'total_events': len(df),
-            'unique_matches': df['match_id'].nunique(),
-            'unique_event_types': df['eventTypeName'].nunique(),
-            'date_range': f"{df['timeMin'].min():.0f} - {df['timeMin'].max():.0f} min"
-        }
-    }
-    
     try:
         # Ejecutar análisis de distribución de eventos
         logger.info("Ejecutando análisis de distribución de eventos...")
-        distribution_results = _analyze_event_distribution(df, save_plots)
-        all_results.update(distribution_results)
+        _analyze_event_distribution(df, save_plots)
 
         # Ejecutar análisis temporal
         logger.info("Ejecutando análisis temporal...")
-        temporal_results = _temporal_distribution_analysis(df, save_plots)
-        all_results.update(temporal_results)
+        _temporal_distribution_analysis(df, save_plots)
         
         # Ejecutar análisis por partido
         logger.info("Ejecutando análisis por partido...")
-        match_results = _events_per_match_analysis(df, save_plots)
-        all_results.update(match_results)
+        _events_per_match_analysis(df, save_plots)
         
         # Ejecutar análisis espacial
         logger.info("Ejecutando análisis espacial...")
-        spatial_results = _spatial_distribution_analysis(df, save_plots)
-        all_results.update(spatial_results)
+        _spatial_distribution_analysis(df, save_plots)
         
         if save_plots:
             PROJECT_ROOT = find_project_root()
-            output_dir = PROJECT_ROOT / "docs" / "reports" / "figures"
+            output_dir = PROJECT_ROOT / "docs" / "reports" / "figures" / "events"
             print(f"\nTodas las figuras guardadas en: {output_dir}")
         
         logger.info("Exploración completa de datos finalizada exitosamente")
         
     except Exception as e:
-        raise e(f"Error durante la exploración: {str(e)}")
-
-    return all_results
+        raise Exception(f"Error durante la exploración: {str(e)}")
 
 
 # === VISUALIZACIONES INICIALES (Players stats) ===
@@ -622,6 +606,7 @@ def _plot_boxplot_players_used(df: pd.DataFrame) -> None:
     
     plt.show()
 
+
 ## === VISUALIZACIÓN 4 ===
 @log_function("plot_corr_heatmap")
 def _plot_corr_heatmap(df: pd.DataFrame) -> None:
@@ -685,6 +670,9 @@ def _plot_corr_heatmap(df: pd.DataFrame) -> None:
 
 
     ## === FUNCIÓN COORDENADORA GENERAL (Players stats) ===
+
+
+## === FUNCIÓN GENERAL STATS ===
 @log_function("player_stats_exploration")
 def player_stats_exploration(df: pd.DataFrame) -> None:
     """

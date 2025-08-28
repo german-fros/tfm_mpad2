@@ -2,7 +2,7 @@ from .data_pre_processing import build_initial_dataframe, extract_players_season
 from .data_processing import feature_engineering, clean_events_data, add_position_to_events, clean_stats_data
 from .data_analysis import exploratory_analysis, events_data_exploration, player_stats_exploration
 
-from .modelling import fit_clusters,optimal_pca_components, define_k, plot_k_diagnostics, auto_configure_clustering, plot_pca_2d
+from .modelling import fit_clusters,optimal_pca_components, define_k, plot_k_diagnostics, auto_configure_clustering, plot_pca_2d, prep_data_modelling
 from .visualizations import (
     create_pizza_comparison,
     create_heatmap_comparison,

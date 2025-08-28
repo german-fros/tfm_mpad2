@@ -11,8 +11,8 @@ logger_setup = LoggerSetup()
 logger = logger_setup.setup_logger(__name__)
 
 # === CONSTRUIR DATAFRAME DE EVENTOS ===
-@log_function()
-def build_initial_dataframe(team: str = None) -> pd.DataFrame:
+@log_function("build_initial_dataframe")
+def build_initial_dataframe(team: Optional[str] = None) -> pd.DataFrame:
     """
     Ejecuta las diferentes funciones que componen la etapa de creación del DataFrame inicial de eventos.
     Exporta el DataFrame.
@@ -45,13 +45,13 @@ def build_initial_dataframe(team: str = None) -> pd.DataFrame:
     return df_inicial
 
 
-@log_function()
-def _load_team_jsons(team:str = None) -> List[Dict]:
+@log_function("_load_team_jsons")
+def _load_team_jsons(team: Optional[str] = None) -> List[Dict[str, Any]]:
     """
     Carga los json de eventing de los partidos seleccionados y los almacena en una lista.
 
     Args:
-        path: Ruta al directorio que contiene los archivos JSON.
+        team: Nombre del equipo para filtrar partidos. Si es None, carga todos.
 
     Returns:
         Lista con los diccionarios de los eventing de los partidos seleccionados.
@@ -96,7 +96,7 @@ def _load_team_jsons(team:str = None) -> List[Dict]:
         except Exception as e:
             raise ValueError(f"Error leyendo {json_file.name}: {str(e)}")
         except Exception as e:
-            raise e(f"Error procesando {json_file.name}: {e}")
+            raise Exception(f"Error procesando {json_file.name}: {e}")
     
     # Crear DataFrame
     if not jsons:
@@ -105,8 +105,8 @@ def _load_team_jsons(team:str = None) -> List[Dict]:
     return jsons
 
 
-@log_function()
-def _concat_matches(matches: List[Dict]) -> pd.DataFrame:
+@log_function("_concat_matches")
+def _concat_matches(matches: List[Dict[str, Any]]) -> pd.DataFrame:
    """
    Procesa y concatena eventos de múltiples partidos en un DataFrame único.
 
@@ -241,10 +241,10 @@ def _concat_matches(matches: List[Dict]) -> pd.DataFrame:
        return df_concat
        
    except Exception as e:
-       raise e(f"Error en concatenación final: {str(e)}")
+       raise Exception(f"Error en concatenación final: {str(e)}")
 
 
-@log_function()
+@log_function("_map_column_names")
 def _map_column_names(team_matches_events: pd.DataFrame) -> pd.DataFrame:
    """
    Mapea nombres de columnas usando diccionarios de tipos de eventos y qualifiers de OPTA.
@@ -383,7 +383,7 @@ def _map_column_names(team_matches_events: pd.DataFrame) -> pd.DataFrame:
 
 
 # === CONSTRUIR DATAFRAMES DE STATS DE JUGADORES Y EQUIPOS
-@log_function()
+@log_function("extract_players_season_stats")
 def extract_players_season_stats() -> pd.DataFrame:
     """
     Extrae estadísticas de jugadores desde los archivos JSON de stats de temporada.
@@ -511,7 +511,7 @@ def extract_players_season_stats() -> pd.DataFrame:
     return df_players
 
 
-@log_function()
+@log_function("extract_teams_season_stats")
 def extract_teams_season_stats() -> pd.DataFrame:
     """
     Extrae estadísticas de equipos desde los archivos JSON de stats de temporada.

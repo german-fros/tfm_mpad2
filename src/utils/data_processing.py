@@ -10,9 +10,16 @@ logger_setup = LoggerSetup()
 logger = logger_setup.setup_logger(__name__)
 
 
-@log_function()
-def feature_engineering(df):
+@log_function("feature_engineering")
+def feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
     """
+    Aplica ingeniería de características al DataFrame de estadísticas de jugadores.
+
+    Args:
+        df: DataFrame con estadísticas de jugadores.
+
+    Returns:
+        DataFrame con características adicionales calculadas.
     """
     df_features = df.copy()
 
@@ -69,9 +76,16 @@ def feature_engineering(df):
     return df_features
 
 
-@log_function()
-def clean_stats_data(df:pd.DataFrame) -> pd.DataFrame:
+@log_function("clean_stats_data")
+def clean_stats_data(df: pd.DataFrame) -> pd.DataFrame:
     """
+    Limpia y procesa los datos de estadísticas de jugadores.
+
+    Args:
+        df: DataFrame con estadísticas de jugadores sin procesar.
+
+    Returns:
+        DataFrame limpio y procesado.
     """
     df_clean = df.copy()
 
@@ -97,14 +111,13 @@ def clean_stats_data(df:pd.DataFrame) -> pd.DataFrame:
     return df_clean
 
 
-@log_function()
+@log_function("clean_events_data")
 def clean_events_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     Limpia y convierte tipos de datos del DataFrame de eventos.
     
     Args:
         df: DataFrame con datos de eventos deportivos.
-        team: Nombre del equipo para nombrar archivo al exportar
         
     Returns:
         DataFrame limpio con tipos de datos corregidos.
@@ -147,8 +160,8 @@ def clean_events_data(df: pd.DataFrame) -> pd.DataFrame:
     return df_clean
 
 
-@log_function()
-def add_position_to_events(df_events: pd.DataFrame, path: str = None) -> pd.DataFrame:
+@log_function("add_position_to_events")
+def add_position_to_events(df_events: pd.DataFrame, path: Optional[str] = None) -> pd.DataFrame:
     """
     Añade información de posición a df_events desde squad_info.json.
     

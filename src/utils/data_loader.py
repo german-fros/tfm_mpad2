@@ -183,10 +183,6 @@ def _load_players_season_stats_from_file() -> pd.DataFrame:
     """
     Función optimizada para cargar estadísticas de temporada de jugadores.
     
-    Args:
-        columns: Lista de columnas específicas a cargar.
-        use_parquet: Usar formato parquet si está disponible.
-    
     Returns:
         DataFrame con estadísticas de jugadores optimizadas.
         
@@ -211,11 +207,6 @@ def _load_players_season_stats_from_file() -> pd.DataFrame:
 def load_players_season_stats() -> pd.DataFrame:
     """
     Cargar estadísticas de temporada de jugadores con optimizaciones.
-    
-    Args:
-        refresh: Forzar recarga desde archivo, ignorando cache.
-        columns: Lista de columnas específicas a cargar.
-        use_summary: Usar solo columnas esenciales para mejor rendimiento.
         
     Returns:
         DataFrame con estadísticas de jugadores optimizadas.
@@ -228,10 +219,6 @@ def load_players_season_stats() -> pd.DataFrame:
 def _load_team_season_stats_from_file() -> pd.DataFrame:
     """
     Función optimizada para cargar estadísticas de temporada de equipos.
-    
-    Args:
-        columns: Lista de columnas específicas a cargar.
-        use_parquet: Usar formato parquet si está disponible.
     
     Returns:
         DataFrame con estadísticas de equipos optimizadas.
@@ -261,10 +248,6 @@ def _load_team_season_stats_from_file() -> pd.DataFrame:
 def load_team_season_stats() -> pd.DataFrame:
     """
     Cargar estadísticas de temporada de equipos con optimizaciones.
-    
-    Args:
-        refresh: Forzar recarga desde archivo, ignorando cache.
-        columns: Lista de columnas específicas a cargar.
         
     Returns:
         DataFrame con estadísticas de equipos optimizadas.
