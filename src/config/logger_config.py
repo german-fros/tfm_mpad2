@@ -6,10 +6,10 @@ import functools
 import locale
 
 # Configurar encoding del sistema
-if sys.platform.startswith('win'):
-    locale.setlocale(locale.LC_ALL, 'Spanish_Spain.utf8')
-# else:
-#     locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')
+# if sys.platform.startswith('win'):
+#     locale.setlocale(locale.LC_ALL, 'Spanish_Spain.utf8')
+# # else:
+# #     locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')
 
 
 def find_project_root():
