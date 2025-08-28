@@ -11,7 +11,7 @@ from sklearn.mixture import GaussianMixture
 from sklearn.cluster import KMeans, AgglomerativeClustering, DBSCAN
 from sklearn.metrics import silhouette_score, calinski_harabasz_score, davies_bouldin_score
 
-from src.config.logger_config import LoggerSetup, log_function
+from src.config.logger_config import LoggerSetup, log_function, find_project_root
 
 logger_setup = LoggerSetup()
 logger = logger_setup.setup_logger(__name__)
@@ -36,7 +36,10 @@ def prep_data_modelling(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
 
     df_players_name = df_model[['player_name', 'position']]
 
-    df_prepared.to_csv('../data/processed/df_modelo.csv', index=False)
+    current = find_project_root()
+    path = current / "data" / "processed" / "df_modelo.csv"
+
+    df_prepared.to_csv(path, index=False)
 
     return df_prepared, df_players_name
 
