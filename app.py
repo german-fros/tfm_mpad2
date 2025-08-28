@@ -10,6 +10,11 @@ from src.utils import require_authentication, get_current_user
 logger_setup = LoggerSetup()
 logger = logger_setup.setup_logger(__name__)
 
+# Añadir la carpeta src/ al PYTHONPATH
+BASE_DIR = Path(__file__).resolve().parent
+SRC_DIR = BASE_DIR / "src"
+sys.path.append(str(SRC_DIR))
+
 # Configuración de la página principal
 st.set_page_config(
     page_title="MLS 2024 | Player Analysis",

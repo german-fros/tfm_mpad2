@@ -9,7 +9,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional, Dict, Any, List
 
-from src.config.logger_config import LoggerSetup, log_function, find_project_root
+from src.config import LoggerSetup, log_function, find_project_root
 
 from src.utils import (
     require_authentication, 
